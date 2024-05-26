@@ -1,25 +1,36 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useRef, useState } from 'react'
+import Container from './Container'
+import ErrorDetailsWindow from './ErrorDetailsWindow'
 
-function App() {
+const App = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [item, setItem] = useState({});
+  const [selectedRow, setSelectedRow] = useState({});
+
+  const toggleModal = () => {
+    setIsOpen(!isOpen);
+  };
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      const isOutside = !event.target.closest(".insideofarea");
+      if (isOutside) {
+        setIsOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Container  isOpen={isOpen} toggleModal={toggleModal} setItem={setItem} setSelectedRow={setSelectedRow}  selectedRow={selectedRow}/>
+      <ErrorDetailsWindow  isOpen={isOpen} toggleModal={toggleModal} item={item}/>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
